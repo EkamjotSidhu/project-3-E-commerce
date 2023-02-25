@@ -22,11 +22,25 @@ query FindOneShirt($shirtId: ID!) {
 `;
 
 export const QUERY_CART = gql`
-query Query {
-  findAllCart {
+query Query($userName: String!) {
+  findUserCart(userName: $userName) {
+    _id
     imgurl
+    itemName
+    price
+    userName
+  }
+}
+`;
+
+export const QUERY_SHIRTCATEGORY=gql`
+query Query($category: String) {
+  findShirt(category: $category) {
+    category
+    imgurl
+    inStock
     itemName
     price
   }
 }
-`;
+`

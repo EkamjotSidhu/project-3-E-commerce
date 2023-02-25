@@ -8,6 +8,7 @@ const typeDefs = gql`
     inStock: Boolean
     price: String
     imgurl: String
+    category: String
   }
 
   type Cart {
@@ -20,7 +21,7 @@ const typeDefs = gql`
 
   type User {
     _id: ID
-    username: String
+    name: String
     email: String
     password: String
     userCart: [String]
@@ -34,13 +35,15 @@ const typeDefs = gql`
   type Query {
     findAllShirts: [Shirt]!
     findOneShirt(shirtId: ID!): Shirt
-    findAllCart:[Cart]
+    findUserCart(userName: String!): [Cart]
+    findShirt(category: String):[Shirt]
   }
 
   type Mutation {
-    addCart(itemName:String,price:String,imgurl:String):Cart
-    addUser(name:String!,email:String!,password:String!): Auth
+    addCart(itemName:String, price:String, imgurl:String, userName:String, userID: String, qty: Int): Cart
+    addUser(name: String!, email: String! , password: String!): Auth
     login(email:String!, password:String!): Auth
+    removeCart(_id: ID!): Cart
   }
 
 `;

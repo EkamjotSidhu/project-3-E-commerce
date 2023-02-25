@@ -4,7 +4,6 @@ const shirtSchema = new Schema({
   itemName: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
   },
   size:
@@ -21,6 +20,10 @@ const shirtSchema = new Schema({
   },
   imgurl: {
     type: String,
+  },
+  category: {
+    type: String,
+    trim: false,
   }
 });
 

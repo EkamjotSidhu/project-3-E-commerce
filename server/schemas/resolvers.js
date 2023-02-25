@@ -14,8 +14,14 @@ const resolvers = {
       return Shirt.findOne({ _id: shirtId });
     },
 
-    findAllCart: async () => {
-      return Cart.find();
+    findUserCart: async (parent, args) => {
+      // return Cart.find({ userName: name })
+      return Cart.where({ userName: args.userName }).find()
+
+      // return Cart.find().sort({ userName: 1 });
+    },
+    findShirt: async (parents, args) => {
+      return await Shirt.where({ category: args.category }).find()
     }
   },
 
@@ -23,25 +29,25 @@ const resolvers = {
     // addCart: async (parent, { itemName, price, imgurl }) => {
     //   return Cart.create({ itemName, price, imgurl })
     // },
-    addCart: async (parent, { itemName, price, imgurl }, context) => {
-      if (context.user) {
-        const cart = await Cart.create(
-          {
-          itemName,
-          price,
-          imgurl,
-          userName: context.user.name
-          });
+    addCart: async (parent, { itemName, price, imgurl, userName, userID, qty }) => {
+      // console.log('Context: ', React.context)
+      const cart = await Cart.create({
+        itemName,
+        price,
+        imgurl,
+        userName,
+        qty
+      });
 
-        await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $addToSet: { cart: cart._id } }
-        );
-
-        return cart;
-      }
-      throw new AuthenticationError('You need to be logged in!');
+      const updateUser = await User.findOneAndUpdate(
+        { _id: userID },
+        { $addToSet: { userCart: cart._id } }
+      );
+       
+      console.log('CART: ', cart, 'updatedUser: ', updateUser);
+      return cart
     },
+    // throw new AuthenticationError('You need to be logged in!');
     addUser: async (parent, { name, email, password }) => {
       const user = await User.create({ name, email, password });
       const token = signToken(user);
@@ -64,6 +70,15 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+    removeCart: async (parent, { _id }) => {
+      const cartItemDel = await Cart.findOneAndDelete({ _id: _id });
+      // console.log('inside resolver, query: ', cartItemDel)
+      if (cartItemDel) {
+        return cartItemDel;
+      }
+      console.log('error deleting')
+
+    }
     // addSkill: async (parent, { profileId, skill }) => {
     //   return Profile.findOneAndUpdate(
     //     { _id: profileId },

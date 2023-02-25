@@ -15,7 +15,11 @@ const cartSchema = new Schema({
     },
     userName: {
         type: String,
-    }
+        required: true
+    },
+    qty: {
+        type: Number,
+    },
 });
 
 const Cart = model('Cart', cartSchema);
